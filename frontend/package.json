@@ -12,6 +12,7 @@
     "@headlessui/react": "^2.2.0",
     "@nextui-org/react": "^2.6.11",
     "axios": "^1.8.2",
+    "lucide-react": "^0.479.0",
     "mongoose": "^8.12.1",
     "next": "^15.2.1",
     "next-auth": "^4.24.11",
