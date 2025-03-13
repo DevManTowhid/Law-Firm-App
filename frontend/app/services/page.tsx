@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Card, CardHeader, CardBody, CardFooter, Button, Textarea } from "@nextui-org/react";
 import { ChevronDown, ChevronUp } from "lucide-react";
