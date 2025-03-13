@@ -1,41 +1,48 @@
-"use client";
-
 import { useState } from "react";
-import { Button, Card, CardHeader, CardBody, CardFooter, Input, Textarea } from "@nextui-org/react";
-import { lawyers } from "../dummy_data/lawyers";
+import { Card, CardHeader, CardBody, CardFooter, Button, Textarea } from "@nextui-org/react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
-export default function Services() {
-  const [filter, setFilter] = useState<string>("All");
-  const [reviews, setReviews] = useState<{ [key: number]: string }>({});
-  const [contacts, setContacts] = useState<number[]>([]);
+interface Lawyer {
+  id: number;
+  name: string;
+  specialization: string;
+  image: string;
+}
 
-  // Get unique specializations including "All"
-  const specializations = ["All", ...Array.from(new Set(lawyers.map((lawyer) => lawyer.specialization)))];
+interface LawyerSectionProps {
+  specialization: string;
+  lawyers: Lawyer[];
+  reviews: { [key: number]: string };
+  setReviews: (reviews: { [key: number]: string }) => void;
+  contacts: number[];
+  setContacts: (contacts: number[]) => void;
+}
 
-  // 🛠️ FIX: Correct Filtering Logic
-  const filteredLawyers = filter === "All" ? lawyers : lawyers.filter((lawyer) => lawyer.specialization === filter);
+export default function LawyerSection({
+  specialization,
+  lawyers,
+  reviews,
+  setReviews,
+  contacts,
+  setContacts,
+}: LawyerSectionProps) {
+  const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className="min-h-screen p-8 space-y-10">
-      {/* 🔹 Specialization Navbar */}
-      <div className="flex flex-wrap gap-3 justify-center bg-gray-100 p-4 rounded-lg shadow-md">
-        {specializations.map((spec) => (
-          <Button
-            key={spec}
-            variant={filter === spec ? "solid" : "light"}
-            color={filter === spec ? "primary" : "default"}
-            className="px-4 py-2 rounded-lg"
-            onClick={() => setFilter(spec)}
-          >
-            {spec}
-          </Button>
-        ))}
+    <div className="bg-white shadow-md rounded-lg mb-4">
+      {/* 🔹 Section Header */}
+      <div
+        className="flex justify-between items-center p-4 cursor-pointer bg-gray-100 hover:bg-gray-200 rounded-lg"
+        onClick={() => setExpanded(!expanded)}
+      >
+        <h2 className="text-xl font-semibold">{specialization}</h2>
+        {expanded ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
       </div>
 
-      {/* 🔹 Lawyer Profiles */}
-      {filteredLawyers.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredLawyers.map((lawyer) => (
+      {/* 🔹 Expandable Lawyer List */}
+      {expanded && (
+        <div className="p-4 space-y-6">
+          {lawyers.map((lawyer) => (
             <Card key={lawyer.id} className="shadow-lg">
               <CardHeader>
                 <img src={lawyer.image} alt={lawyer.name} className="w-20 h-20 rounded-full object-cover" />
@@ -52,7 +59,7 @@ export default function Services() {
                   <Textarea
                     placeholder="Write a review..."
                     value={reviews[lawyer.id] || ""}
-                    onChange={(e) => setReviews((prev) => ({ ...prev, [lawyer.id]: e.target.value }))}
+                    onChange={(e) => setReviews({ ...reviews, [lawyer.id]: e.target.value })}
                     className="w-full"
                   />
                 </div>
@@ -61,7 +68,7 @@ export default function Services() {
                 {/* 🔹 Add to Contacts */}
                 <Button
                   color="primary"
-                  onClick={() => setContacts((prev) => (prev.includes(lawyer.id) ? prev : [...prev, lawyer.id]))}
+                  onClick={() => setContacts(contacts.includes(lawyer.id) ? contacts : [...contacts, lawyer.id])}
                 >
                   {contacts.includes(lawyer.id) ? "Added to Contacts" : "Add to Contacts"}
                 </Button>
@@ -74,8 +81,6 @@ export default function Services() {
             </Card>
           ))}
         </div>
-      ) : (
-        <p className="text-center text-gray-500">No lawyers available for this specialization.</p>
       )}
     </div>
   );
