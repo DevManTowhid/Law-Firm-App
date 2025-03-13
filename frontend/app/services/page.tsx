@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button, Card, CardHeader, CardBody, CardFooter, Input, Textarea } from "@nextui-org/react";
-import { lawyers } from "../lawyers";
+import { lawyers } from "../dummy_data/lawyers";
 
 export default function Services() {
   const [filter, setFilter] = useState<string>("All");
